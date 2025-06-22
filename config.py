@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 
+# API_KEY = "d610c594d99e9914f73ea072d3904a8758f107cb"
 API_KEY = os.getenv("SERPER_API_KEY")
 
 CIUDADES = ["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide"]

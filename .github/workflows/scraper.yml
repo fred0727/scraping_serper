@@ -1,8 +1,12 @@
-name: Ejecutar Scraper Diario
+name: Ejecutar Scraper 5 veces al día
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Ejecutar todos los días a las 12:00 UTC
+    - cron: '0 3 * * *'   # 03:00 UTC
+    - cron: '0 6 * * *'   # 06:00 UTC
+    - cron: '0 9 * * *'   # 09:00 UTC
+    - cron: '0 12 * * *'  # 12:00 UTC
+    - cron: '0 15 * * *'  # 12:00 UTC
   workflow_dispatch:      # Permitir ejecución manual desde GitHub
 
 jobs:
@@ -10,13 +14,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clonar el repo
+    - name: Clonar el repositorio
       uses: actions/checkout@v3
 
     - name: Configurar Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.9'
+        python-version: '3.10'  # Se actualiza a 3.10
 
     - name: Instalar dependencias
       run: |

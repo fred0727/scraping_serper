@@ -1,55 +1,74 @@
-import os
-import json
-import csv
-import random
-from datetime import datetime
-
-CSV_FOLDER = "csv_output"
-ESTADO_FOLDER = "estado"
-
-os.makedirs(CSV_FOLDER, exist_ok=True)
-os.makedirs(ESTADO_FOLDER, exist_ok=True)
-
-def path_estado(ciudad):
-    return os.path.join(ESTADO_FOLDER, f"estado_{ciudad.lower()}.json")
+from db import DB_CONFIG
+import mysql.connector
+from mysql.connector import Error
 
 def cargar_estado(ciudad):
-    ruta = path_estado(ciudad)
-    if os.path.exists(ruta):
-        with open(ruta, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return set(data.get("emails", [])), set(data.get("urls", []))
-    return set(), set()
+    try:
+        conn = mysql.connector.connect(**DB_CONFIG)
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT email FROM estado_scraping WHERE ciudad = %s", (ciudad,))
+        emails = set(row[0] for row in cursor.fetchall())
+
+        cursor.execute("SELECT url FROM estado_scraping WHERE ciudad = %s", (ciudad,))
+        urls = set(row[0] for row in cursor.fetchall())
+
+        cursor.close()
+        conn.close()
+        return emails, urls
+
+    except Error as e:
+        print(f"[❌] Error cargando estado: {e}")
+        return set(), set()
 
 def guardar_estado(ciudad, emails, urls):
-    ruta = path_estado(ciudad)
-    with open(ruta, "w", encoding="utf-8") as f:
-        json.dump({"emails": list(emails), "urls": list(urls)}, f, indent=2)
+    try:
+        conn = mysql.connector.connect(**DB_CONFIG)
+        cursor = conn.cursor()
 
-def abrir_csv(ciudad):
-    nombre = f"{ciudad}_{datetime.now():%Y%m%d_%H%M}_{random.randint(100,999)}.csv"
-    ruta = os.path.join(CSV_FOLDER, nombre)
-    f = open(ruta, "w", newline="", encoding="utf-8")
-    writer = csv.writer(f)
-    writer.writerow(["Email", "Organización", "Fuente", "Ciudad"])
-    return f, writer
+        for email in emails:
+            cursor.execute("""
+                INSERT IGNORE INTO estado_scraping (ciudad, email, url)
+                VALUES (%s, %s, '')
+            """, (ciudad, email))
 
-# ----------------------------------------
-# NUEVAS FUNCIONES PARA CONTROLAR PROMPTS
-# ----------------------------------------
+        for url in urls:
+            cursor.execute("""
+                INSERT IGNORE INTO estado_scraping (ciudad, email, url)
+                VALUES (%s, '', %s)
+            """, (ciudad, url))
 
-def path_estado_prompt(ciudad):
-    return os.path.join(ESTADO_FOLDER, f"estado_prompt_{ciudad.lower()}.json")
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    except Error as e:
+        print(f"[❌] Error guardando estado: {e}")
 
 def cargar_prompt_actual(ciudad):
-    ruta = path_estado_prompt(ciudad)
-    if os.path.exists(ruta):
-        with open(ruta, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return data.get("indice", -1)  # -1 para empezar en 0 la primera vez
-    return -1
+    try:
+        conn = mysql.connector.connect(**DB_CONFIG)
+        cursor = conn.cursor()
+        cursor.execute("SELECT indice_prompt_actual FROM estado_prompt WHERE ciudad = %s", (ciudad,))
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return row[0] if row else -1
+    except Error as e:
+        print(f"[❌] Error cargando prompt actual: {e}")
+        return -1
 
 def guardar_prompt_actual(ciudad, indice):
-    ruta = path_estado_prompt(ciudad)
-    with open(ruta, "w", encoding="utf-8") as f:
-        json.dump({"indice": indice}, f, indent=2)
+    try:
+        conn = mysql.connector.connect(**DB_CONFIG)
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO estado_prompt (ciudad, indice_prompt_actual)
+            VALUES (%s, %s)
+            ON DUPLICATE KEY UPDATE indice_prompt_actual = %s
+        """, (ciudad, indice, indice))
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Error as e:
+        print(f"[❌] Error guardando prompt actual: {e}")

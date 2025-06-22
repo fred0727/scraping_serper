@@ -29,7 +29,7 @@ def es_email_valido(email):
 def extraer_emails_desde_url(url, retries=3):
     for intento in range(1, retries + 1):
         try:
-            r = requests.get(url, timeout=20, headers=get_headers(), verify=False)
+            r = requests.get(url, timeout=15, headers=get_headers(), verify=False)
 
             if r.status_code == 403:
                 raise Exception("Acceso prohibido (403)")

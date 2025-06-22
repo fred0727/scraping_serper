@@ -17,8 +17,8 @@ def insertar_scraping(email, organizacion, url, ciudad):
         cursor = conn.cursor()
 
         sql = """
-        INSERT INTO scraping (email, organizacion, url, ciudad)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO scraping (email, organizacion, url, ciudad,fecha)
+        VALUES (%s, %s, %s, %s, NOW())
         ON DUPLICATE KEY UPDATE email=email;
         """
 
