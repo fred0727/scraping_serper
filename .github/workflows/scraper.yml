@@ -2,11 +2,11 @@ name: Ejecutar Scraper 5 veces al día
 
 on:
   schedule:
-    - cron: '0 3 * * *'   # 03:00 UTC
     - cron: '0 6 * * *'   # 06:00 UTC
-    - cron: '0 9 * * *'   # 09:00 UTC
+    - cron: '0 8 * * *'   # 09:00 UTC
+    - cron: '0 10 * * *'  # 12:00 UTC
     - cron: '0 12 * * *'  # 12:00 UTC
-    - cron: '0 15 * * *'  # 12:00 UTC
+    - cron: '0 14 * * *'  # 12:00 UTC
   workflow_dispatch:      # Permitir ejecución manual desde GitHub
 
 jobs:
@@ -29,5 +29,10 @@ jobs:
 
     - name: Ejecutar scraper
       env:
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASS: ${{ secrets.DB_PASS }}
+        DB_PORT: ${{ secrets.DB_PORT }}
         SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
       run: python main.py

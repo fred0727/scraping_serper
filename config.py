@@ -110,7 +110,7 @@ PROMPTS_ROTATIVOS = [
     "eventos de integración cultural con talleres musicales latinos en {}"
 ]
 
-LIMITE_POR_CIUDAD = 1000
+LIMITE_POR_CIUDAD = 200
 
 HEADERS = {
     'X-API-KEY': API_KEY,

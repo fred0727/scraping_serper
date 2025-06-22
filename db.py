@@ -1,14 +1,13 @@
 import mysql.connector
 from mysql.connector import Error
+import os
 
-# Configuración de la base de datos
 DB_CONFIG = {
-    'host': 'srv1689.hstgr.io',
-    'database': 'u603781914_app',
-    'user': 'u603781914_admin',
-    'password': '@dminDb2024',
-    'port': 3306,
-    'charset': 'utf8mb4'
+    'host': os.environ["DB_HOST"],
+    'database': os.environ["DB_NAME"],
+    'user': os.environ["DB_USER"],
+    'password': os.environ["DB_PASS"],
+    'port': int(os.environ.get("DB_PORT", 3306)),
 }
 
 def insertar_scraping(email, organizacion, url, ciudad):

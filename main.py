@@ -44,7 +44,7 @@ def ejecutar_ciudad(ciudad):
                 break
         if len(nuevos) >= LIMITE_POR_CIUDAD:
             break
-        time.sleep(random.uniform(1.0, 2.0))
+        time.sleep(random.uniform(1.5, 3.5))
 
     if nuevos:
         guardar_estado(ciudad, vistos_emails, vistos_urls)
