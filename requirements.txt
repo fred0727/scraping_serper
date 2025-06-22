@@ -3,7 +3,6 @@ anyio==4.9.0
 beautifulsoup4==4.13.4
 certifi==2025.6.15
 charset-normalizer==3.4.2
-click==8.2.1
 colorama==0.4.6
 distro==1.9.0
 duckduckgo_search==8.0.4
