@@ -1,14 +1,14 @@
-name: Ejecutar Scraper 5 veces al día
+name: Ejecutar Scraper cada 2 horas
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # 09:00 UTC
-    - cron: '0 8 * * *'  # 12:00 UTC
-    - cron: '0 10 * * *'  # 12:00 UTC
-    - cron: '0 12 * * *'  # 12:00 UTC
-    - cron: '0 14 * * *'  # 12:00 UTC
-    - cron: '0 16 * * *'  # 12:00 UTC
-  workflow_dispatch:      # Permitir ejecución manual desde GitHub
+    - cron: '0 0 * * *'   # 00:00 UTC
+    - cron: '0 2 * * *'   # 02:00 UTC
+    - cron: '0 4 * * *'   # 04:00 UTC
+    - cron: '0 6 * * *'   # 06:00 UTC
+    - cron: '0 8 * * *'   # 08:00 UTC
+    - cron: '0 10 * * *'  # 10:00 UTC
+  workflow_dispatch:      # Permite ejecución manual
 
 jobs:
   run-scraper:
@@ -21,7 +21,7 @@ jobs:
     - name: Configurar Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'  # Se actualiza a 3.10
+        python-version: '3.10'
 
     - name: Instalar dependencias
       run: |
