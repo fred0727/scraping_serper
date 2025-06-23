@@ -7,6 +7,7 @@ on:
     - cron: '0 10 * * *'  # 12:00 UTC
     - cron: '0 12 * * *'  # 12:00 UTC
     - cron: '0 14 * * *'  # 12:00 UTC
+    - cron: '0 16 * * *'  # 12:00 UTC
   workflow_dispatch:      # Permitir ejecución manual desde GitHub
 
 jobs:
