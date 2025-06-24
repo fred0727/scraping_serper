@@ -17,12 +17,22 @@ def get_headers():
     }
 
 def es_email_valido(email):
+    email = email.lower()
+    basura = ["info@", "contact@", "webmaster@", "noreply@", "admin@"]
+    if any(b in email for b in basura):
+        return False
+
+    dominio = email.split('.')[-1]
+    institucionales = {"edu", "gob", "org", "gov"}
+    if dominio in institucionales:
+        return False
+
+    # Validación general
     tlds_validos = {
-        "com", "org", "net", "edu", "gov", "co", "es", "info", "pe", "au", "nz",
+        "com", "net", "co", "es", "info", "pe", "au", "nz",
         "int", "mil", "biz", "tv", "us", "uk", "ca", "eu", "ar", "mx", "cl", "br"
     }
     if re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
-        dominio = email.split(".")[-1].lower()
         return dominio in tlds_validos
     return False
 
